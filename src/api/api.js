@@ -18,6 +18,14 @@ const menulist = '/menu/list';
 const userList = '/user/list';
 // 获取部门信息
 const deptList = '/dept/list';
+// 添加用户
+const user = '/user';
+// 获取角色信息
+const roleTreeList = '/role/roleTreeListByIdUser';
+// 设置角色信息
+const setRole = '/user/setRole';
+// 获取角色列表（可搜索）
+const getRoleList = '/role/list';
 export {
     http,
     login,
@@ -28,6 +36,10 @@ export {
     articlelist,
     menulist,
     userList,
-    deptList
+    deptList,
+    user,
+    roleTreeList,
+    setRole,
+    getRoleList
 }
   

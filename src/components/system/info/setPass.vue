@@ -61,14 +61,18 @@ export default {
                 this.$message.error('新密码重复不一样');
             }else{
                 // 发送ajax
-                this.$http.post(http+updatePwd,{emulateJSON:true},{
-                    oldPassword:this.pass.oldPassword,
-                    password:this.pass.password,
-                    rePassword:this.pass.rePassword,
-                }).then((data)=>{
-                    console.log(data)
+                this.$http.post(http+updatePwd,this.pass,{emulateJSON:true}).then((data)=>{
+                    if(data.data.msg=='成功'){
+                        this.$message({
+                            message: '恭喜你，修改成功',
+                            type: 'success'
+                        });
+                        this.dialogFormVisible = false;
+                    }else{
+                        this.$message.error(data.data.msg);
+                    }
                 },(err)=>{
-                    console.log(err)
+                    this.$message.error(err.data.message);
                 })
             }
         }

@@ -49,20 +49,25 @@ export default {
         this.$http.get(http + articlebychannel)
       ]).then(
         data => {
-          // 文章列表信息
-          var articleList = data[0].data.data
-          // 文章数量
-          var articleNum = data[1].data.data
-          // 迭代新的数组
-          // 文章列表信息数组
-          var articleListArr = articleList.map(item=>item.name);
-          // 文章数量数组
-          var articleNumArr = articleNum.map(item=>item.articles);
-          // 绘制图表
-          this.view(articleListArr,articleNumArr);
+          if(data[0].data.msg=='成功'&&data[1].data.msg=='成功'){
+            // 文章列表信息
+            var articleList = data[0].data.data
+            // 文章数量
+            var articleNum = data[1].data.data
+            // 迭代新的数组
+            // 文章列表信息数组
+            var articleListArr = articleList.map(item=>item.name);
+            // 文章数量数组
+            var articleNumArr = articleNum.map(item=>item.articles);
+            // 绘制图表
+            this.view(articleListArr,articleNumArr);
+          }else{
+            this.$message.error(data[0].data.msg);
+            this.$message.error(data[1].data.msg);
+          }
         },
         err => {
-          console.log(err);
+          this.$message.error(err.data.message);
         }
       );
     }

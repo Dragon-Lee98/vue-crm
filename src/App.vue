@@ -4,7 +4,7 @@
       <el-aside style="width:auto;">
         <!-- 导航 -->
         <el-menu 
-        default-active="1-4-1" 
+        :default-active="$route.path" 
         class="el-menu-vertical-demo" 
         :collapse="isCollapse" 
         v-if="$store.state.menu.menu && $store.state.user.info.permissions"
@@ -84,43 +84,49 @@ export default {
     // 获取导航信息
     getMenu(){
       this.$http.get(http+listForRouter).then((data)=>{
-        this.$store.commit('setMenu',data);
+        if(data.data.msg=='成功'){
+          this.$store.commit('setMenu',data);
+        }else{
+          this.$message.error(data.data.message);
+        }
       },(err)=>{
-        // 获取数据失败
-        // 重新登录
-        location.href = './login.html';
+        this.$message.error(err.data.message);
       })
     },
     // 获取用户信息
     getInfo(){
       this.$http.get(http+info).then((data)=>{
-        this.$store.commit('setInfo',data);
+        if(data.data.msg=='成功'){
+          this.$store.commit('setInfo',data);
+        }else{
+          this.$message.error(data.data.message);
+        }
       },(err)=>{
-        // 获取数据失败
-        // 重新登录
-        location.href = './login.html';
+        this.$message.error(err.data.message);
       })
     },
     // 获取菜单功能列表
     getMenuList(){
       this.$http.get(http+menulist).then((data)=>{
-        var data = data.data.data;
-        // 存放菜单功能信息
-        var json = {};
-        // 循环父级
-        for(var i=0;i<data.length;i++){
-          var child = data[i].children;
-          // 循环子集
-          for(var j=0;j<child.length;j++){
-            this.$set(json,child[j].url,child[j]);
+        if(data.data.msg=='成功'){
+          var data = data.data.data;
+          // 存放菜单功能信息
+          var json = {};
+          // 循环父级
+          for(var i=0;i<data.length;i++){
+            var child = data[i].children;
+            // 循环子集
+            for(var j=0;j<child.length;j++){
+              this.$set(json,child[j].url,child[j]);
+            }
           }
+          // 存储到vuex中
+          this.$store.commit('setMenuList',json);
+        }else{
+          this.$message.error(data.data.message);
         }
-        // 存储到vuex中
-        this.$store.commit('setMenuList',json);
       },(err)=>{
-        // 获取数据失败
-        // 重新登录
-        location.href = './login.html';
+        this.$message.error(err.data.message);
       })
     }
   }

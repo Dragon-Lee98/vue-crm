@@ -46,12 +46,11 @@ export default {
             localStorage.token = data.data.data.token;
             // 跳转到主页
             location.href = '/';
-          }else if(data.data.msg=='用户名或密码错误'){
-            this.$message.error('用户名或密码错误');
+          }else{
+            this.$message.error(data.data.msg);
           }
         },(err)=>{
-          // 登录失败
-          this.$message.error('登录失败');
+          this.$message.error(err.data.message);
         })
       }
     }

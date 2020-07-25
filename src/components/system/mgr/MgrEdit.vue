@@ -1,14 +1,10 @@
 <template>
   <div>
-    <el-dialog title="添加用户" :visible.sync="mytype" @close="clearText">
-      <el-form ref="form" :model="form" label-width="80px" v-if="deptListArr">
+    <el-dialog title="修改用户" :visible.sync="mytype" @close="clearText">
+      <el-form ref="form" :model="form" label-width="80px" v-if="deptListArr&&form">
         <!-- 账户 -->
         <el-form-item label="账户">
           <el-input v-model="form.account"></el-input>
-        </el-form-item>
-        <!-- 密码 -->
-        <el-form-item label="密码">
-          <el-input v-model="form.password"></el-input>
         </el-form-item>
         <!-- 姓名 -->
         <el-form-item label="姓名">
@@ -68,9 +64,8 @@ export default {
   data() {
     return {
       mytype: this.type, // 模态框状态
-      form: {
+      formType: {
         account: "", //账号
-        password: "", //密码
         name: "", //姓名
         birthday: "", //生日
         sex: "1", //性别
@@ -79,6 +74,7 @@ export default {
         deptid: "", //部门id
         status: "1" //状态
       },
+      form: "",
       deptListArr: [], // 部门信息
       props: {
         value: "id",
@@ -87,11 +83,21 @@ export default {
       }
     };
   },
-  props: ["type", "fun"],
+  props: ["type", "fun", "rowData"],
   watch: {
     type: function() {
       // 断开单向数据流
       this.mytype = this.type;
+    },
+    rowData: function() {
+      // 浅拷贝变深拷贝
+      var json = {}
+      for (var i in this.rowData) {
+        // 全部转换为字符串
+        // this.rowData[i] = this.rowData[i].toString();
+        this.$set(json,i,this.rowData[i].toString());
+      }
+      this.form = json;
     }
   },
   mounted() {
@@ -99,45 +105,42 @@ export default {
   },
   methods: {
     //  处理时间格式
-    setTime(time) {
+    setTime(time){
       var time = new Date(time);
-      return (
-        time.getFullYear() + "-" + (time.getMonth() + 1) + "-" + time.getDate()
-      );
+      return time.getFullYear()+'-'+(time.getMonth()+1)+'-'+time.getDate();
     },
-    // 发送ajax，添加用户
+    // 发送ajax，修改用户
     updataUser() {
       // 判断是否填写完表格
       var type = true;
       // 检查是否填写完所有数据
-      for (var i in this.form) {
+      for (var i in this.formType) {
         if (this.form[i] == "") {
           type = false;
         }
       }
       if (type) {
         //  处理部门信息（只要最后一个id）
-        this.form.deptid = this.form.deptid[this.form.deptid.length - 1];
+        if(Array.isArray(this.form.deptid)){// 是数组才需要取最后一个数值
+          this.form.deptid = this.form.deptid[this.form.deptid.length-1];
+        }
         //  处理生日时间格式
         this.form.birthday = this.setTime(this.form.birthday);
         //  发送ajax
-        this.$http.post(http + user, this.form, { emulateJSON: true }).then(
-          data => {
-            if (data.data.msg == "成功") {
-              // 关闭对话框
-              this.mytype = false;
-              // 清空表单数据
-              for (var i in this.form) {
-                this.form[i] = "";
-              }
+        this.$http.post(http+user,this.form,{emulateJSON:true}).then((data)=>{
+            if(data.data.msg=='成功'){
+                // 关闭对话框
+                this.mytype = false;
+                // 清空表单数据
+                for(var i in this.form){
+                    this.form[i] = '';
+                }
             } else {
               this.$message.error(data.data.msg);
             }
-          },
-          err => {
-            this.$message.error(err.data.message);
-          }
-        );
+        },(err)=>{
+          this.$message.error(err.data.message);
+        })
       } else {
         this.$message.error("请填写完表格");
       }
@@ -159,13 +162,13 @@ export default {
       //     this.pass[i] = '';
       // }
       // 修改父级组件的对话框状态
-      this.fun("mgrAdd");
+      this.fun("mgrEdit");
     },
     // 获取部门信息
     getdeptList() {
       this.$http.get(http + deptList).then(
         data => {
-          if (data.data.msg == "成功") {
+          if(data.data.msg=='成功'){
             // 赋值为处理过的部门信息数据
             this.deptListArr = this.setChildrenNull(data.data.data);
           } else {

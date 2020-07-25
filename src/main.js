@@ -13,15 +13,25 @@ import router from './router/router';
 // 引入echarts
 import echarts from 'echarts';
 Vue.prototype.$echarts = echarts;
-// 判断有无登录
-if(localStorage.token){
-  // 登录成功
-  // 设置token请求头
-  Vue.http.headers.common['Authorization'] = localStorage.token;
-}else{
-  // 登陆失败
-  location.href = './login.html';
-}
+
+// 拦截器
+Vue.http.interceptors.push((request,next)=>{
+  // 判断有无登录
+  if(localStorage.token){
+    // 登录成功
+    // 设置token请求头
+    Vue.http.headers.common['Authorization'] = localStorage.token;
+  }else{
+    // 登陆失败
+    location.href = './login.html';
+  }
+  next((response)=>{
+    if(response.status == '401'){
+      // token过期
+      location.href = './login.html';
+    }
+  })
+})
 
 new Vue({
   el: '#app',
