@@ -26,6 +26,13 @@ const roleTreeList = '/role/roleTreeListByIdUser';
 const setRole = '/user/setRole';
 // 获取角色列表（可搜索）
 const getRoleList = '/role/list';
+// 添加、根据角色id修改角色
+const role = '/role';
+// 获取角色权限状态数
+const roleSetAuthority = '/menu/menuTreeListByRoleId';
+
+// 添加、修改部门
+const dept = '/dept';
 export {
     http,
     login,
@@ -40,6 +47,9 @@ export {
     user,
     roleTreeList,
     setRole,
-    getRoleList
+    getRoleList,
+    role,
+    dept,
+    roleSetAuthority
 }
   

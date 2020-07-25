@@ -82,8 +82,8 @@ export default {
     getRoleList() {
       this.$http
         .get(http + roleTreeList, {
-          params: {
-            idUser: this.$store.state.user.info.profile.id
+          params:{
+            idUser:this.$store.state.user.info.profile.id
           }
         })
         .then(
@@ -96,6 +96,7 @@ export default {
           },
           err => {
             this.$message.error(err.data.message);
+            console.log(err)
           }
         );
     }

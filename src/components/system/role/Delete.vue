@@ -1,8 +1,8 @@
 <template>
   <div>
-    <el-dialog title="删除用户" :visible.sync="mytype" @close="clearText">
+    <el-dialog title="删除角色" :visible.sync="mytype" @close="clearText">
       <div>
-        你确定要删除
+        你确定要删除角色
         <span style="color:blue;">{{rowData.name}}</span>
         吗？
       </div>
@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { http, user } from "../../../api/api";
+import { http, role } from "../../../api/api";
 export default {
   data() {
     return {
@@ -30,13 +30,13 @@ export default {
   },
   methods: {
     clearText() {
-      this.fun("mgrDelete");
+      this.fun("roleDelete");
     },
     deleteUser() {
       this.$http
-        .delete(http + user, {
+        .delete(http + role, {
           params: {
-            userId: this.rowData.id
+            roleId: this.rowData.id
           }
         })
         .then(

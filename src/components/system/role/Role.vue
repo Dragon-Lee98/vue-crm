@@ -37,26 +37,26 @@
     </div>
     <!-- 功能组件 -->
 
-    <!-- <MgrAdd :type="btnType.mgrAdd" :fun="showBtn"></MgrAdd>
-    <MgrEdit :type="btnType.mgrEdit" :fun="showBtn" :rowData="rowData"></MgrEdit>
-    <MgrDelete :type="btnType.mgrDelete" :fun="showBtn" :rowData="rowData"></MgrDelete>
-    <MgrSetRole :type="btnType.mgrSetRole" :fun="showBtn" :rowData="rowData"></MgrSetRole>-->
+    <Add :type="btnType.roleAdd" :fun="showBtn"></Add>
+    <Edit :type="btnType.roleEdit" :fun="showBtn" :rowData="rowData"></Edit>
+    <Delete :type="btnType.roleDelete" :fun="showBtn" :rowData="rowData"></Delete>
+    <SetAuthority :type="btnType.roleSetAuthority" :fun="showBtn" :rowData="rowData"></SetAuthority>
   </div>
 </template>
 
 <script>
 import { http, getRoleList } from "../../../api/api";
 // 引入添加用户的组件
-// import MgrAdd from "./MgrAdd";
-// import MgrEdit from "./MgrEdit";
-// import MgrDelete from "./MgrDelete";
-// import MgrSetRole from "./MgrSetRole";
+import Add from "./Add";
+import Edit from "./Edit";
+import Delete from "./Delete";
+import SetAuthority from "./SetAuthority";
 export default {
   components: {
-    // MgrAdd,
-    // MgrEdit,
-    // MgrDelete,
-    // MgrSetRole
+    Add,
+    Edit,
+    Delete,
+    SetAuthority
   },
   data() {
     return {
@@ -99,19 +99,19 @@ export default {
     btn(item) {
       // 设置按钮的类型
       this.setBtnType();
-      if (item.code == "mgrAdd") {
+      if (item.code == "roleAdd") {
         // console.log("弹出对话框");
         this.btnType[item.code] = true;
       } else {
         if (this.rowData != "") {
           // 判断是否选择用户
-          if (item.code == "mgrEdit") {
+          if (item.code == "roleEdit") {
             // console.log("修改用户");
             this.btnType[item.code] = true;
-          } else if (item.code == "mgrDelete") {
+          } else if (item.code == "roleDelete") {
             // console.log("删除用户");
             this.btnType[item.code] = true;
-          } else if (item.code == "mgrSetRole") {
+          } else if (item.code == "roleSetAuthority") {
             // console.log("分配角色");
             this.btnType[item.code] = true;
           }
@@ -149,6 +149,7 @@ export default {
           },
           err => {
             this.$message.error(err.data.message);
+            console.log(err)
           }
         );
     }
