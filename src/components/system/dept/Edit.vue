@@ -1,10 +1,6 @@
 <template>
   <div>
     <el-dialog title="添加部门" :visible.sync="mytype" @close="clearText">
-      <div>
-        <el-alert v-if="rowData" :title='"当前选择的是 "+rowData.fullname+" 下的部门，如果需要创建公司级别的请取消选择"' type="info" effect="dark"></el-alert>
-        <el-alert v-else title="当前选择的是 公司 级别部门，如果需要创建部门级别的请选择创建的父级部门" type="info" effect="dark"></el-alert>
-      </div>
       <el-form ref="form" :model="form" label-width="80px" style="padding:10px 0;">
         <el-form-item label="部门全称">
           <el-input v-model="form.fullname"></el-input>
@@ -32,7 +28,8 @@ export default {
         simplename: "", //部门简称
       },
       form: {
-        
+        fullname: "", //部门全称
+        simplename: "", //部门简称
       }
     };
   },
@@ -47,6 +44,7 @@ export default {
       var json = {};
       for (var i in this.rowData) {
         // 全部转换为字符串
+        // this.rowData[i] = this.rowData[i].toString();
         this.$set(json, i, this.rowData[i].toString());
       }
       this.form = json;
@@ -64,27 +62,16 @@ export default {
         }
       }
       if (type) {
-        // 设置父级id
-        if(this.rowData ==''){
-            this.form.pid = 0;
-        }else{
-          this.form.pid = this.rowData.id;
-          // 删除id信息，因为存在id信息就是替换部门 现在只需要添加   
-          delete this.form.id;
-          //  删除不需要的数据
-          delete this.form.children;
-          delete this.form.createBy;
-          delete this.form.createTime;
-          delete this.form.modifyBy;
-          delete this.form.modifyTime;
-          delete this.form.pids;
-          delete this.form.tips;
-          delete this.form.version;
-        }
         // 设置排序
         this.form.num = 0;
         //  发送ajax
-        this.$http.post(http + dept, JSON.stringify(this.form), { emulateJSON: true }).then(
+        this.$http.post(http + dept, JSON.stringify({
+            simplename:this.form.simplename,
+            num:this.rowData.num,
+            fullname:this.form.fullname,
+            pid:this.rowData.pid,
+            id:this.rowData.id,
+        }), { emulateJSON: true }).then(
           data => {
             if (data.data.msg == "成功") {
               // 关闭对话框
@@ -109,7 +96,7 @@ export default {
     },
     clearText() {
       // 修改父级组件的对话框状态
-      this.fun("deptAdd");
+      this.fun("deptEdit");
     },
   }
 };

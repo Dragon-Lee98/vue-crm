@@ -28,8 +28,10 @@ const setRole = '/user/setRole';
 const getRoleList = '/role/list';
 // 添加、根据角色id修改角色
 const role = '/role';
-// 获取角色权限状态数
+// 获取角色权限状态树
 const roleSetAuthority = '/menu/menuTreeListByRoleId';
+// 设置角色权限树
+const roleSavePermission = '/role/savePermisson';
 
 // 添加、修改部门
 const dept = '/dept';
@@ -50,6 +52,7 @@ export {
     getRoleList,
     role,
     dept,
-    roleSetAuthority
+    roleSetAuthority,
+    roleSavePermission
 }
   

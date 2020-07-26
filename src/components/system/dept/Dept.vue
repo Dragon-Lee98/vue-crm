@@ -37,11 +37,11 @@
 
     <Add :type="btnType.deptAdd" :fun="showBtn" :rowData="rowData"></Add>
 
-    <!-- <MgrEdit :type="btnType.mgrEdit" :fun="showBtn" :rowData="rowData"></MgrEdit>
+    <Edit :type="btnType.deptEdit" :fun="showBtn" :rowData="rowData"></Edit>
 
-    <MgrDelete :type="btnType.mgrDelete" :fun="showBtn" :rowData="rowData"></MgrDelete>
+     <Delete :type="btnType.deptDelete" :fun="showBtn" :rowData="rowData"></Delete>
 
-    <MgrSetRole :type="btnType.mgrSetRole" :fun="showBtn" :rowData="rowData"></MgrSetRole> -->
+    <!-- <MgrSetRole :type="btnType.mgrSetRole" :fun="showBtn" :rowData="rowData"></MgrSetRole> -->
   </div>
 </template>
 
@@ -49,14 +49,14 @@
 import { http, deptList } from "../../../api/api";
 // 引入添加用户的组件
 import Add from "./Add";
-// import MgrEdit from "./MgrEdit";
-// import MgrDelete from "./MgrDelete";
+import Edit from "./Edit";
+import Delete from "./Delete";
 // import MgrSetRole from "./MgrSetRole";
 export default {
   components: {
     Add,
-    // MgrEdit,
-    // MgrDelete,
+    Edit,
+    Delete,
     // MgrSetRole
   },
   data() {
