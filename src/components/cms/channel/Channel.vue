@@ -1,23 +1,172 @@
 <template>
-  <div v-if="$store.state.user.MenuList[this.$route.path]">
-      栏目管理
-      <el-button 
-      type="primary" 
-      round 
-      v-for="item in $store.state.user.MenuList[this.$route.path].children"
-      :key="item.id"
-      v-show="item.statusName == '启用'"
+  <div>
+    <div v-if="$store.state.user.MenuList[this.$route.path]" class="btn">
+      <el-button
+        type="primary"
+        round
+        v-for="item in $store.state.user.MenuList[this.$route.path].children"
+        :key="item.id"
+        v-show="item.statusName == '启用'"
+        @click="btn(item)"
       >{{item.name}}{{item.statusName}}</el-button>
-      {{$store.state.user.MenuList[this.$route.path].children}}
+    </div>
+    <!-- 信息展示 -->
+    <div class="data-form">
+      <el-table
+        :data="tableData"
+        style="width: 100%"
+        v-if="tableData"
+        row-key="id"
+        border
+        :tree-props="{children: 'children'}"
+        @cell-click="cellClick"
+        :highlight-current-row="true"
+        max-height="300">
+        <el-table-column
+          prop="name"
+          label="栏目名称">
+        </el-table-column>
+        <el-table-column
+          prop="code"
+          label="编码">
+        </el-table-column>
+        <el-table-column
+          prop="id"
+          label="栏目id">
+        </el-table-column>
+      </el-table>
+    </div>
+    <!-- 功能组件 -->
+
+    <Add :type="btnType.channeladd" :fun="showBtn" :rowData="rowData"></Add>
+
+    <Edit :type="btnType.channelEdit" :fun="showBtn" :rowData="rowData"></Edit>
+
+    <Delete :type="btnType.channelDelete" :fun="showBtn" :rowData="rowData"></Delete>
+
   </div>
 </template>
 
 <script>
+import { http, articlelist } from "../../../api/api";
+// 引入添加用户的组件
+import Add from "./Add";
+import Edit from "./Edit";
+import Delete from "./Delete";
 export default {
-
-}
+  components: {
+    Add,
+    Edit,
+    Delete,
+  },
+  data() {
+    return {
+      tableData: "", // 栏目列表信息
+      btnType: {}, // 按钮的类型
+      rowData: "", // 当前选中的栏目
+    };
+  },
+  mounted() {
+    // 获取字典信息
+    this.getDictList();
+  },
+  methods: {
+    // 搜索
+    search(){
+      this.getDictList(this.names);
+      // 清空搜索栏
+      this.name = '';
+    },
+    clearSearch(){
+      // 清空搜索栏
+      this.name = '';
+      this.getDictList(this.names);
+    },
+    // 重置
+    // 对话框关闭的回调函数，修改对话框状态
+    showBtn(type) {
+      this.btnType[type] = false;
+      // 重新获取部门信息
+      this.getDictList();
+      // 清空数据
+      this.rowData = "";
+    },
+    // 点击列表信息的每一行
+    cellClick(row) {
+      this.rowData = row;
+    },
+    // 设置按钮的类型
+    setBtnType() {
+      if (this.$store.state.user.MenuList[this.$route.path].children) {
+        var typeArr = this.$store.state.user.MenuList[this.$route.path]
+          .children;
+        for (var i = 0; i < typeArr.length; i++) {
+          // 将每个按钮的code设置为false
+          this.$set(this.btnType, typeArr[i].code, false);
+        }
+      }
+    },
+    // 所有按钮的统一点击事件
+    btn(item) {
+      console.log(item.code)
+      // 设置按钮的类型
+      this.setBtnType();
+      if (item.code == "channeladd") {
+        this.btnType[item.code] = true;
+      } else {
+        if (this.rowData != "") {
+          // 判断是否选择字典
+          if (item.code == "channelEdit") {
+            this.btnType[item.code] = true;
+          } else if (item.code == "channelDelete") {
+            this.btnType[item.code] = true;
+          }
+        } else {
+          this.$message.error("请选择字典信息");
+        }
+      }
+    },
+    // 获取字典列表信息
+    getDictList(name) {
+      this.$http
+        .get(http + articlelist)
+        .then(
+          data => {
+            if (data.data.msg == "成功") {
+              // 字典列表信息
+              this.tableData = data.data.data;
+              console.log(data)
+            } else {
+              this.$message.error(data.data.msg);
+            }
+          },
+          err => {
+            this.$message.error(err.data.message);
+          }
+        );
+    }
+  }
+};
 </script>
 
 <style>
-
+.demo-table-expand {
+  font-size: 0;
+}
+.demo-table-expand label {
+  width: 90px;
+  color: #99a9bf;
+}
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 50%;
+}
+.data-form{margin-top: 10px;}
+.search {
+  margin: 20px 0;
+}
+.search-btn{
+  padding-left: 10px;
+}
 </style>

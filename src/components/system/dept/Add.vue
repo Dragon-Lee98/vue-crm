@@ -42,18 +42,9 @@ export default {
       // 断开单向数据流
       this.mytype = this.type;
     },
-    rowData: function() {
-      // 浅拷贝变深拷贝
-      var json = {};
-      for (var i in this.rowData) {
-        // 全部转换为字符串
-        this.$set(json, i, this.rowData[i].toString());
-      }
-      this.form = json;
-    }
   },
   methods: {
-    // 发送ajax，修改用户
+    // 发送ajax，修改部门
     updataUser() {
       // 判断是否填写完表格
       var type = true;

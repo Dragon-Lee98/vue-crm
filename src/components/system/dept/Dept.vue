@@ -41,7 +41,6 @@
 
      <Delete :type="btnType.deptDelete" :fun="showBtn" :rowData="rowData"></Delete>
 
-    <!-- <MgrSetRole :type="btnType.mgrSetRole" :fun="showBtn" :rowData="rowData"></MgrSetRole> -->
   </div>
 </template>
 
@@ -51,13 +50,11 @@ import { http, deptList } from "../../../api/api";
 import Add from "./Add";
 import Edit from "./Edit";
 import Delete from "./Delete";
-// import MgrSetRole from "./MgrSetRole";
 export default {
   components: {
     Add,
     Edit,
     Delete,
-    // MgrSetRole
   },
   data() {
     return {
@@ -112,7 +109,7 @@ export default {
             this.btnType[item.code] = true;
           }
         } else {
-          this.$message.error("请选择用户信息");
+          this.$message.error("请选择部门信息");
         }
       }
     },

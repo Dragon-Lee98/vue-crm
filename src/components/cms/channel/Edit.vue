@@ -1,15 +1,14 @@
 <template>
   <div>
-    <el-dialog title="修改部门" :visible.sync="mytype" @close="clearText">
+    <el-dialog title="修改栏目" :visible.sync="mytype" @close="clearText">
       <el-form ref="form" :model="form" label-width="80px" style="padding:10px 0;">
-        <el-form-item label="部门全称">
-          <el-input v-model="form.fullname"></el-input>
+        <el-form-item label="栏目名称">
+          <el-input v-model="form.name"></el-input>
         </el-form-item>
-        <el-form-item label="部门简称">
-          <el-input v-model="form.simplename"></el-input>
+        <el-form-item label="编码">
+          <el-input v-model="form.code"></el-input>
         </el-form-item>
       </el-form>
-
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="updataUser">确 定</el-button>
       </div>
@@ -18,19 +17,20 @@
 </template>
 
 <script>
-import { http, dept } from "../../../api/api";
+import { http, channel } from "../../../api/api";
 export default {
   data() {
     return {
       mytype: this.type, // 模态框状态
       formType: {
-        fullname: "", //部门全称
-        simplename: "", //部门简称
+        name: "", 
+        code:""
       },
       form: {
-        fullname: "", //部门全称
-        simplename: "", //部门简称
-      }
+        name: "", 
+        code:""
+      },
+      status:[]
     };
   },
   props: ["type", "fun", "rowData"],
@@ -62,16 +62,12 @@ export default {
         }
       }
       if (type) {
-        // 设置排序
-        this.form.num = 0;
         //  发送ajax
-        this.$http.post(http + dept, JSON.stringify({
-            simplename:this.form.simplename,
-            num:this.rowData.num,
-            fullname:this.form.fullname,
-            pid:this.rowData.pid,
-            id:this.rowData.id,
-        }), { emulateJSON: true }).then(
+        this.$http.post(http + channel, {
+          id:this.rowData.id,
+          name:this.form.name,
+          code:this.form.code,
+        }, { emulateJSON: true }).then(
           data => {
             if (data.data.msg == "成功") {
               // 关闭对话框
@@ -80,11 +76,11 @@ export default {
               for (var i in this.form) {
                 this.form[i] = "";
               }
+              // 清除字典详细信息
+              this.status=[];
             } else {
               this.$message.error(data.data.msg);
             }
-            delete this.form.pid;
-            delete this.form.num;
           },
           err => {
             this.$message.error(err.data.message);
@@ -96,7 +92,9 @@ export default {
     },
     clearText() {
       // 修改父级组件的对话框状态
-      this.fun("deptEdit");
+      this.fun("channelEdit");
+      // 清除字典详细信息
+      this.status=[];
     },
   }
 };

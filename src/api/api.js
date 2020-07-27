@@ -12,7 +12,7 @@ const updatePwd = '/account/updatePwd';
 const articlebychannel = '/article/articlebychannel';
 // 获取首页分类信息
 const articlelist = '/channel/list';
-// 获取功能操作信息
+// 获取菜单信息
 const menulist = '/menu/list';
 // 获取用户列表
 const userList = '/user/list';
@@ -33,8 +33,18 @@ const roleSetAuthority = '/menu/menuTreeListByRoleId';
 // 设置角色权限树
 const roleSavePermission = '/role/savePermisson';
 
-// 添加、修改部门
+// 添加、修改、删除部门
 const dept = '/dept';
+
+// 添加&修改菜单
+const menu = '/menu';
+
+// 获取字典列表（可搜索）
+const dictList = '/dict/list';
+// 添加字典信息
+const dict = '/dict';
+// 添加&修改栏目
+const channel = '/channel';
 export {
     http,
     login,
@@ -53,6 +63,10 @@ export {
     role,
     dept,
     roleSetAuthority,
-    roleSavePermission
+    roleSavePermission,
+    menu,
+    dictList,
+    dict,
+    channel
 }
   
