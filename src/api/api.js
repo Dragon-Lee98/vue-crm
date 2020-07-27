@@ -45,6 +45,9 @@ const dictList = '/dict/list';
 const dict = '/dict';
 // 添加&修改栏目
 const channel = '/channel';
+
+// 添加&修改文章
+const article = '/article'
 export {
     http,
     login,
@@ -67,6 +70,7 @@ export {
     menu,
     dictList,
     dict,
-    channel
+    channel,
+    article
 }
   
