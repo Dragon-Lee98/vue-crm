@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="main" style="width: 600px;height:400px;"></div>
+    <div id="main" style="width: 1000px;height:500px;padding:20px"></div>
   </div>
 </template>
 
@@ -23,17 +23,37 @@ export default {
       // 指定图表的配置项和数据
       var option = {
         title: {
-          text: "文章统计"
+          text: "文章统计",
+          textStyle:{
+            color:"#fff",
+            fontSize:30,
+          },
         },
-        tooltip: {},
         xAxis: {
-          data: arr1
+          type: 'category',
+          data: arr1,
+          axisLabel: {
+            show: true,
+            textStyle: {
+              fontSize:16,
+              color: '#fff'
+            }
+          }
         },
-        yAxis: {},
+        yAxis: {
+          type: 'value',
+          axisLabel: {
+            show: true,
+            textStyle: {
+              fontSize:16,
+              color: '#fff'
+            }
+          }
+        },
         series: [
           {
             name: "数量",
-            type: "bar",
+            type: "line",
             data: arr2
           }
         ]
@@ -75,5 +95,5 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 </style>

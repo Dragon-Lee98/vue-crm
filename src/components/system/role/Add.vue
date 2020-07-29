@@ -36,7 +36,7 @@ export default {
       form: {
         name: "", //角色名称
         tips: "", //角色编码
-        deptid: "", //部门id
+        deptid: "" //部门id
       },
       deptListArr: [], // 部门信息
       props: {
@@ -68,6 +68,13 @@ export default {
         }
       }
       if (type) {
+        // 开启动画
+        const loading = this.$loading({
+          lock: true,
+          text: "Loading",
+          spinner: "el-icon-loading",
+          background: "rgba(0, 0, 0, 0.7)"
+        });
         // 父级id
         this.form.pid = this.$store.state.user.info.profile.roleid;
         // num排序
@@ -75,25 +82,31 @@ export default {
         //  处理部门信息（只要最后一个id）
         this.form.deptid = this.form.deptid[this.form.deptid.length - 1];
         //  发送ajax
-        this.$http.post(http + role,JSON.stringify(this.form), { emulateJSON: true }).then(
-          data => {
+        this.$http
+          .post(http + role, JSON.stringify(this.form), { emulateJSON: true })
+          .then(
+            data => {
               if (data.data.msg == "成功") {
-                  // 关闭对话框
-              this.mytype = false;
-              // 清空表单数据
-              for (var i in this.form) {
+                // 关闭对话框
+                this.mytype = false;
+                // 清空表单数据
+                for (var i in this.form) {
                   this.form[i] = "";
+                }
+              } else {
+                this.$message.error(data.data.msg);
               }
-            } else {
-              this.$message.error(data.data.msg);
+              delete this.form.pid;
+              delete this.form.num;
+              // 结束动画
+              setTimeout(() => {
+                loading.close();
+              }, 0);
+            },
+            err => {
+              this.$message.error(err.data.message);
             }
-            delete this.form.pid;
-            delete this.form.num;
-          },
-          err => {
-            this.$message.error(err.data.message);
-          }
-        );
+          );
       } else {
         this.$message.error("请填写完表格");
       }
@@ -110,15 +123,18 @@ export default {
       return data;
     },
     clearText() {
-      // 清空密码信息
-      // for(var i in this.pass){
-      //     this.pass[i] = '';
-      // }
       // 修改父级组件的对话框状态
       this.fun("roleAdd");
     },
     // 获取部门信息
     getdeptList() {
+      // 开启动画
+      const loading = this.$loading({
+        lock: true,
+        text: "Loading",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
       this.$http.get(http + deptList).then(
         data => {
           if (data.data.msg == "成功") {
@@ -127,6 +143,10 @@ export default {
           } else {
             this.$message.error(data.data.msg);
           }
+          // 结束动画
+          setTimeout(() => {
+            loading.close();
+          }, 0);
         },
         err => {
           this.$message.error(err.data.message);

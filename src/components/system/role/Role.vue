@@ -4,7 +4,7 @@
     <el-row class="search">
       <el-col :span="18">
         <div class="grid-content bg-purple-dark">
-          <el-input v-model="names"></el-input>
+          <el-input v-model="names" placeholder="角色名字"></el-input>
         </div>
       </el-col>
       <el-col :span="6" class="search-btn">
@@ -21,12 +21,12 @@
       @click="btn(item)"
     >{{item.name}}{{item.statusName}}</el-button>
     <!-- 信息展示 -->
-    <div>
+    <div style="padding:20px 0;">
       <el-table
         :data="tableData"
         style="width: 100%"
         v-if="tableData"
-        height="300"
+        height="400"
         @cell-click="cellClick"
         :highlight-current-row="true"
       >
@@ -132,6 +132,13 @@ export default {
     },
     // 获取角色列表
     getRoleList() {
+      // 开启动画
+      const loading = this.$loading({
+        lock: true,
+        text: "Loading",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
       this.$http
         .get(http + getRoleList, {
           params: {
@@ -146,10 +153,14 @@ export default {
             } else {
               this.$message.error(data.data.msg);
             }
+            // 结束动画
+            setTimeout(() => {
+              loading.close();
+            }, 0);
           },
           err => {
             this.$message.error(err.data.message);
-            console.log(err)
+            console.log(err);
           }
         );
     }
@@ -171,9 +182,9 @@ export default {
   width: 50%;
 }
 .search {
-  margin: 20px 0;
+  margin: 0 0 20px 0;
 }
-.search-btn{
+.search-btn {
   padding-left: 10px;
 }
 </style>

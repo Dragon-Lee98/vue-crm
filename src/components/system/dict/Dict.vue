@@ -3,12 +3,12 @@
     <el-row class="search">
       <el-col :span="18">
         <div class="grid-content bg-purple-dark">
-          <el-input v-model="names"></el-input>
+          <el-input v-model="names" placeholder="字典名字"></el-input>
         </div>
       </el-col>
       <el-col :span="6" class="search-btn">
-          <el-button type="primary" round @click="search">搜索</el-button>
-          <el-button type="primary" round @click="clearSearch">重置</el-button>
+        <el-button type="primary" round @click="search">搜索</el-button>
+        <el-button type="primary" round @click="clearSearch">重置</el-button>
       </el-col>
     </el-row>
     <div v-if="$store.state.user.MenuList[this.$route.path]" class="btn">
@@ -32,29 +32,17 @@
         :tree-props="{children: 'children'}"
         @cell-click="cellClick"
         :highlight-current-row="true"
-        max-height="300">
-        <el-table-column
-          prop="name"
-          label="字典名称">
-        </el-table-column>
-        <el-table-column
-          prop="detail"
-          label="备注详情">
-        </el-table-column>
-        <el-table-column
-          prop="id"
-          label="字典id">
-        </el-table-column>
+        max-height="300"
+      >
+        <el-table-column prop="name" label="字典名称"></el-table-column>
+        <el-table-column prop="detail" label="备注详情"></el-table-column>
+        <el-table-column prop="id" label="字典id"></el-table-column>
       </el-table>
     </div>
     <!-- 功能组件 -->
-
     <Add :type="btnType.dictAdd" :fun="showBtn" :rowData="rowData"></Add>
-
     <Edit :type="btnType.dictEdit" :fun="showBtn" :rowData="rowData"></Edit>
-
     <Delete :type="btnType.dictDelete" :fun="showBtn" :rowData="rowData"></Delete>
-
   </div>
 </template>
 
@@ -68,14 +56,14 @@ export default {
   components: {
     Add,
     Edit,
-    Delete,
+    Delete
   },
   data() {
     return {
-      names:"", // 搜索的名称
+      names: "", // 搜索的名称
       tableData: "", // 字典列表信息
       btnType: {}, // 按钮的类型
-      rowData: "", // 当前选中的字典
+      rowData: "" // 当前选中的字典
     };
   },
   mounted() {
@@ -84,14 +72,14 @@ export default {
   },
   methods: {
     // 搜索
-    search(){
+    search() {
       this.getDictList(this.names);
       // 清空搜索栏
-      this.name = '';
+      this.name = "";
     },
-    clearSearch(){
+    clearSearch() {
       // 清空搜索栏
-      this.name = '';
+      this.name = "";
       this.getDictList(this.names);
     },
     // 重置
@@ -122,7 +110,6 @@ export default {
     btn(item) {
       // 设置按钮的类型
       this.setBtnType();
-      console.log(item.code)
       if (item.code == "dictAdd") {
         this.btnType[item.code] = true;
       } else {
@@ -140,9 +127,16 @@ export default {
     },
     // 获取字典列表信息
     getDictList(name) {
+      // 开启动画
+      const loading = this.$loading({
+        lock: true,
+        text: "Loading",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
       this.$http
-        .get(http + dictList,{
-          params:{
+        .get(http + dictList, {
+          params: {
             name
           }
         })
@@ -154,6 +148,10 @@ export default {
             } else {
               this.$message.error(data.data.msg);
             }
+            // 结束动画
+            setTimeout(() => {
+              loading.close();
+            }, 0);
           },
           err => {
             this.$message.error(err.data.message);
@@ -177,11 +175,13 @@ export default {
   margin-bottom: 0;
   width: 50%;
 }
-.data-form{margin-top: 10px;}
+.data-form {
+  margin-top: 10px;
+}
 .search {
   margin: 20px 0;
 }
-.search-btn{
+.search-btn {
   padding-left: 10px;
 }
 </style>

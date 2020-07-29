@@ -163,6 +163,13 @@ export default {
     },
     // 获取部门信息
     getdeptList() {
+      // 开启动画
+      const loading = this.$loading({
+        lock: true,
+        text: "Loading",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
       this.$http.get(http + deptList).then(
         data => {
           if (data.data.msg == "成功") {
@@ -171,6 +178,10 @@ export default {
           } else {
             this.$message.error(data.data.msg);
           }
+          // 结束动画
+          setTimeout(() => {
+            loading.close();
+          }, 0);
         },
         err => {
           this.$message.error(err.data.message);

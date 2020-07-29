@@ -17,32 +17,14 @@
         border
         :tree-props="{children: 'children'}"
         @cell-click="cellClick"
-        :highlight-current-row="true">
-        <el-table-column
-          prop="name"
-          label="菜单名称"
-          sortable
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="component"
-          label="链接标识"
-          sortable
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="isMenuName"
-          label="是否是菜单">
-        </el-table-column>
-        <el-table-column
-          :formatter="cellname"
-          prop="status"
-          label="状态">
-        </el-table-column>
-        <el-table-column
-          prop="id"
-          label="菜单id">
-        </el-table-column>
+        :highlight-current-row="true"
+        height="400"
+      >
+        <el-table-column prop="name" label="菜单名称" sortable width="180"></el-table-column>
+        <el-table-column prop="component" label="链接标识" sortable width="180"></el-table-column>
+        <el-table-column prop="isMenuName" label="是否是菜单"></el-table-column>
+        <el-table-column :formatter="cellname" prop="status" label="状态"></el-table-column>
+        <el-table-column prop="id" label="菜单id"></el-table-column>
       </el-table>
     </div>
     <!-- 功能组件 -->
@@ -52,7 +34,6 @@
     <Edit :type="btnType.menuEdit" :fun="showBtn" :rowData="rowData"></Edit>
 
     <Delete :type="btnType.menuDelete" :fun="showBtn" :rowData="rowData"></Delete>
-
   </div>
 </template>
 
@@ -66,13 +47,13 @@ export default {
   components: {
     Add,
     Edit,
-    Delete,
+    Delete
   },
   data() {
     return {
       tableData: "", // 菜单列表信息
       btnType: {}, // 按钮的类型
-      rowData: "", // 当前选中的用户
+      rowData: "" // 当前选中的用户
     };
   },
   mounted() {
@@ -81,13 +62,13 @@ export default {
   },
   methods: {
     // 状态码=》状态
-    cellname(row, column, cellValue, index){
-      if(cellValue==0){
-        return '弃用';
-      }else if(cellValue==1){
-        return '启用';
-      }else if(cellValue==2){
-        return '删除';
+    cellname(row, column, cellValue, index) {
+      if (cellValue == 0) {
+        return "弃用";
+      } else if (cellValue == 1) {
+        return "启用";
+      } else if (cellValue == 2) {
+        return "删除";
       }
     },
     // 对话框关闭的回调函数，修改对话框状态
@@ -117,7 +98,6 @@ export default {
     btn(item) {
       // 设置按钮的类型
       this.setBtnType();
-      console.log(item.code)
       if (item.code == "menuAdd") {
         // console.log("弹出对话框");
         this.btnType[item.code] = true;
@@ -138,21 +118,30 @@ export default {
     },
     // 获取菜单列表信息
     getMenuList() {
-      this.$http
-        .get(http + menulist)
-        .then(
-          data => {
-            if (data.data.msg == "成功") {
-              // 菜单列表信息
-              this.tableData = data.data.data;
-            } else {
-              this.$message.error(data.data.msg);
-            }
-          },
-          err => {
-            this.$message.error(err.data.message);
+      // 开启动画
+      const loading = this.$loading({
+        lock: true,
+        text: "Loading",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
+      this.$http.get(http + menulist).then(
+        data => {
+          if (data.data.msg == "成功") {
+            // 菜单列表信息
+            this.tableData = data.data.data;
+          } else {
+            this.$message.error(data.data.msg);
           }
-        );
+          // 结束动画
+          setTimeout(() => {
+            loading.close();
+          }, 0);
+        },
+        err => {
+          this.$message.error(err.data.message);
+        }
+      );
     }
   }
 };
@@ -171,5 +160,7 @@ export default {
   margin-bottom: 0;
   width: 50%;
 }
-.data-form{margin-top: 10px;}
+.data-form {
+  margin-top: 10px;
+}
 </style>

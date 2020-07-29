@@ -18,19 +18,11 @@
         border
         :tree-props="{children: 'children'}"
         @cell-click="cellClick"
-        :highlight-current-row="true">
-        <el-table-column
-          prop="fullname"
-          label="部门全称">
-        </el-table-column>
-        <el-table-column
-          prop="simplename"
-          label="部门简称">
-        </el-table-column>
-        <el-table-column
-          prop="id"
-          label="部门id">
-        </el-table-column>
+        :highlight-current-row="true"
+      >
+        <el-table-column prop="fullname" label="部门全称"></el-table-column>
+        <el-table-column prop="simplename" label="部门简称"></el-table-column>
+        <el-table-column prop="id" label="部门id"></el-table-column>
       </el-table>
     </div>
     <!-- 功能组件 -->
@@ -39,8 +31,7 @@
 
     <Edit :type="btnType.deptEdit" :fun="showBtn" :rowData="rowData"></Edit>
 
-     <Delete :type="btnType.deptDelete" :fun="showBtn" :rowData="rowData"></Delete>
-
+    <Delete :type="btnType.deptDelete" :fun="showBtn" :rowData="rowData"></Delete>
   </div>
 </template>
 
@@ -54,13 +45,13 @@ export default {
   components: {
     Add,
     Edit,
-    Delete,
+    Delete
   },
   data() {
     return {
       tableData: "", // 用户列表信息
       btnType: {}, // 按钮的类型
-      rowData: "", // 当前选中的用户
+      rowData: "" // 当前选中的用户
     };
   },
   mounted() {
@@ -115,21 +106,30 @@ export default {
     },
     // 获取用户列表信息
     getUserList() {
-      this.$http
-        .get(http + deptList)
-        .then(
-          data => {
-            if (data.data.msg == "成功") {
-              // 用户列表信息
-              this.tableData = data.data.data;
-            } else {
-              this.$message.error(data.data.msg);
-            }
-          },
-          err => {
-            this.$message.error(err.data.message);
+      // 开启动画
+      const loading = this.$loading({
+        lock: true,
+        text: "Loading",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
+      this.$http.get(http + deptList).then(
+        data => {
+          if (data.data.msg == "成功") {
+            // 用户列表信息
+            this.tableData = data.data.data;
+          } else {
+            this.$message.error(data.data.msg);
           }
-        );
+          // 结束动画
+          setTimeout(() => {
+            loading.close();
+          }, 0);
+        },
+        err => {
+          this.$message.error(err.data.message);
+        }
+      );
     }
   }
 };
@@ -148,5 +148,7 @@ export default {
   margin-bottom: 0;
   width: 50%;
 }
-.data-form{margin-top: 10px;}
+.data-form {
+  margin-top: 10px;
+}
 </style>

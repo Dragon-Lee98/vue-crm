@@ -4,7 +4,7 @@
     <el-row class="search">
       <el-col :span="18">
         <div class="grid-content bg-purple-dark">
-          <el-input v-model="names"></el-input>
+          <el-input v-model="names" placeholder="用户名字"></el-input>
         </div>
       </el-col>
       <el-col :span="6" class="search-btn">
@@ -22,14 +22,14 @@
     >{{item.name}}{{item.statusName}}</el-button>
 
     <!-- 信息展示 -->
-    <div>
+    <div style="padding:20px 0;">
       <el-table
-        :data="tableData"
-        style="width: 100%"
-        v-if="tableData"
-        height="300"
-        @cell-click="cellClick"
-        :highlight-current-row="true"
+      :data="tableData"
+      style="width: 100%;"
+      v-if="tableData"
+      height="300"
+      @cell-click="cellClick"
+      :highlight-current-row="true"
       >
         <el-table-column type="expand">
           <template slot-scope="props">
@@ -76,13 +76,9 @@
       ></el-pagination>
     </div>
     <!-- 功能组件 -->
-    <!-- 添加用户 -->
     <MgrAdd :type="btnType.mgrAdd" :fun="showBtn"></MgrAdd>
-    <!-- 修改用户信息 -->
     <MgrEdit :type="btnType.mgrEdit" :fun="showBtn" :rowData="rowData"></MgrEdit>
-    <!-- 删除用户信息 -->
     <MgrDelete :type="btnType.mgrDelete" :fun="showBtn" :rowData="rowData"></MgrDelete>
-    <!-- 分配角色 -->
     <MgrSetRole :type="btnType.mgrSetRole" :fun="showBtn" :rowData="rowData"></MgrSetRole>
   </div>
 </template>
@@ -181,6 +177,13 @@ export default {
     },
     // 获取用户列表信息
     getUserList(page) {
+      // 开启动画
+      const loading = this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
       this.$http
         .get(http + userList, {
           params: {
@@ -199,6 +202,10 @@ export default {
             } else {
               this.$message.error(data.data.msg);
             }
+            // 结束动画
+            setTimeout(() => {
+              loading.close();
+            }, 0);
           },
           err => {
             this.$message.error(err.data.message);
@@ -223,7 +230,7 @@ export default {
   width: 50%;
 }
 .search {
-  margin: 20px 0;
+  margin-bottom: 20px;
 }
 .search-btn{
   padding-left: 10px;

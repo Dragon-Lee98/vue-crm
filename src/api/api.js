@@ -32,22 +32,28 @@ const role = '/role';
 const roleSetAuthority = '/menu/menuTreeListByRoleId';
 // 设置角色权限树
 const roleSavePermission = '/role/savePermisson';
-
 // 添加、修改、删除部门
 const dept = '/dept';
-
 // 添加&修改菜单
 const menu = '/menu';
-
 // 获取字典列表（可搜索）
 const dictList = '/dict/list';
 // 添加字典信息
 const dict = '/dict';
 // 添加&修改栏目
 const channel = '/channel';
-
 // 添加&修改文章
-const article = '/article'
+const article = '/article';
+// 上传图片
+const file = '/file';
+// 获取文章列表
+const articleList = '/article/list';
+// 获取文件信息
+const fileMgrList = '/fileMgr/list';
+// 下载图片
+const fileDownload = '/file/download';
+// 图片静态地址
+const publicImg = 'http://39.101.217.150:8086/statics/'
 export {
     http,
     login,
@@ -71,6 +77,11 @@ export {
     dictList,
     dict,
     channel,
-    article
+    article,
+    file,
+    articleList,
+    fileMgrList,
+    fileDownload,
+    publicImg
 }
   

@@ -25,11 +25,11 @@ export default {
       mytype: this.type, // 模态框状态
       formType: {
         fullname: "", //部门全称
-        simplename: "", //部门简称
+        simplename: "" //部门简称
       },
       form: {
         fullname: "", //部门全称
-        simplename: "", //部门简称
+        simplename: "" //部门简称
       }
     };
   },
@@ -62,34 +62,51 @@ export default {
         }
       }
       if (type) {
+        // 开启动画
+        const loading = this.$loading({
+          lock: true,
+          text: "Loading",
+          spinner: "el-icon-loading",
+          background: "rgba(0, 0, 0, 0.7)"
+        });
         // 设置排序
         this.form.num = 0;
         //  发送ajax
-        this.$http.post(http + dept, JSON.stringify({
-            simplename:this.form.simplename,
-            num:this.rowData.num,
-            fullname:this.form.fullname,
-            pid:this.rowData.pid,
-            id:this.rowData.id,
-        }), { emulateJSON: true }).then(
-          data => {
-            if (data.data.msg == "成功") {
-              // 关闭对话框
-              this.mytype = false;
-              // 清空表单数据
-              for (var i in this.form) {
-                this.form[i] = "";
+        this.$http
+          .post(
+            http + dept,
+            JSON.stringify({
+              simplename: this.form.simplename,
+              num: this.rowData.num,
+              fullname: this.form.fullname,
+              pid: this.rowData.pid,
+              id: this.rowData.id
+            }),
+            { emulateJSON: true }
+          )
+          .then(
+            data => {
+              if (data.data.msg == "成功") {
+                // 关闭对话框
+                this.mytype = false;
+                // 清空表单数据
+                for (var i in this.form) {
+                  this.form[i] = "";
+                }
+              } else {
+                this.$message.error(data.data.msg);
               }
-            } else {
-              this.$message.error(data.data.msg);
+              delete this.form.pid;
+              delete this.form.num;
+              // 结束动画
+              setTimeout(() => {
+                loading.close();
+              }, 0);
+            },
+            err => {
+              this.$message.error(err.data.message);
             }
-            delete this.form.pid;
-            delete this.form.num;
-          },
-          err => {
-            this.$message.error(err.data.message);
-          }
-        );
+          );
       } else {
         this.$message.error("请填写完表格");
       }
@@ -97,7 +114,7 @@ export default {
     clearText() {
       // 修改父级组件的对话框状态
       this.fun("deptEdit");
-    },
+    }
   }
 };
 </script>

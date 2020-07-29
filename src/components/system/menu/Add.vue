@@ -1,7 +1,6 @@
 <template>
   <div>
     <el-dialog title="添加菜单" :visible.sync="mytype" @close="clearText">
-      {{form}}
       <div>
         <el-alert v-if="rowData" title="当前选中的是子级菜单" type="info" effect="dark"></el-alert>
         <el-alert v-else title="当前选中的是一级菜单" type="info" effect="dark"></el-alert>
@@ -47,20 +46,20 @@ export default {
     return {
       mytype: this.type, // 模态框状态
       formType: {
-        name: "", 
-        code: "", 
-        component: "", 
-        url: "", 
-        ismenu: "1", 
-        status: "1", 
+        name: "",
+        code: "",
+        component: "",
+        url: "",
+        ismenu: "1",
+        status: "1"
       },
       form: {
-        name: "", 
-        code: "", 
-        component: "", 
-        url: "", 
-        ismenu: "1", 
-        status: "1", 
+        name: "",
+        code: "",
+        component: "",
+        url: "",
+        ismenu: "1",
+        status: "1"
       }
     };
   },
@@ -69,7 +68,7 @@ export default {
     type: function() {
       // 断开单向数据流
       this.mytype = this.type;
-    },
+    }
   },
   methods: {
     // 发送ajax，修改菜单
@@ -83,12 +82,19 @@ export default {
         }
       }
       if (type) {
+        // 开启动画
+        const loading = this.$loading({
+          lock: true,
+          text: "Loading",
+          spinner: "el-icon-loading",
+          background: "rgba(0, 0, 0, 0.7)"
+        });
         // 设置父级id
-        if(this.rowData ==''){
-            this.form.pcode = 0;
-        }else{
+        if (this.rowData == "") {
+          this.form.pcode = 0;
+        } else {
           this.form.pcode = this.rowData.code;
-          // 删除id信息，因为存在id信息就是替换menu 现在只需要添加   
+          // 删除id信息，因为存在id信息就是替换menu 现在只需要添加
           delete this.form.id;
           //  删除不需要的数据
           delete this.form.children;
@@ -103,30 +109,36 @@ export default {
         // 设置排序
         this.form.num = 0;
         //  发送ajax
-        this.$http.post(http + menu, JSON.stringify(this.form), { emulateJSON: true }).then(
-          data => {
-            if (data.data.msg == "成功") {
-              // 关闭对话框
-              this.mytype = false;
-              // 清空表单数据
-              this.form = {
-                name: "", 
-                code: "", 
-                component: "", 
-                url: "", 
-                ismenu: "1", 
-                status: "1", 
+        this.$http
+          .post(http + menu, JSON.stringify(this.form), { emulateJSON: true })
+          .then(
+            data => {
+              if (data.data.msg == "成功") {
+                // 关闭对话框
+                this.mytype = false;
+                // 清空表单数据
+                this.form = {
+                  name: "",
+                  code: "",
+                  component: "",
+                  url: "",
+                  ismenu: "1",
+                  status: "1"
+                };
+              } else {
+                this.$message.error(data.data.msg);
               }
-            } else {
-              this.$message.error(data.data.msg);
+              delete this.form.pid;
+              delete this.form.num;
+              // 结束动画
+              setTimeout(() => {
+                loading.close();
+              }, 0);
+            },
+            err => {
+              this.$message.error(err.data.message);
             }
-            delete this.form.pid;
-            delete this.form.num;
-          },
-          err => {
-            this.$message.error(err.data.message);
-          }
-        );
+          );
       } else {
         this.$message.error("请填写完表格");
       }
@@ -134,7 +146,7 @@ export default {
     clearText() {
       // 修改父级组件的对话框状态
       this.fun("menuAdd");
-    },
+    }
   }
 };
 </script>

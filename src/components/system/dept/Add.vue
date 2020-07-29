@@ -32,7 +32,8 @@ export default {
         simplename: "", //部门简称
       },
       form: {
-        
+        fullname: "", //部门全称
+        simplename: "", //部门简称
       }
     };
   },
@@ -74,6 +75,13 @@ export default {
         }
         // 设置排序
         this.form.num = 0;
+        // 开启动画
+        const loading = this.$loading({
+          lock: true,
+          text: 'Loading',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        })
         //  发送ajax
         this.$http.post(http + dept, JSON.stringify(this.form), { emulateJSON: true }).then(
           data => {
@@ -89,6 +97,10 @@ export default {
             }
             delete this.form.pid;
             delete this.form.num;
+            // 结束动画
+            setTimeout(() => {
+              loading.close();
+            }, 0);
           },
           err => {
             this.$message.error(err.data.message);

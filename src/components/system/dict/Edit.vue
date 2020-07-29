@@ -7,23 +7,27 @@
         </el-form-item>
 
         <div v-show="status.length">
-          <div>
-            字典详情
-          </div>
+          <div>字典详情</div>
           <el-row :gutter="20" v-for="(item,index) in status" :key="index">
-            <el-col :span="10"><div class="grid-content bg-purple">
-              <el-form-item label="状态码">
-                <el-input v-model="item.status"></el-input>
-              </el-form-item>
-            </div></el-col>
-            <el-col :span="10"><div class="grid-content bg-purple">
-              <el-form-item label="含义">
-                <el-input v-model="item.content"></el-input>
-              </el-form-item>  
-            </div></el-col>
-            <el-col :span="4"><div class="grid-content bg-purple">
-                <el-button type="danger" @click='status.splice(index,1)'>移除</el-button>  
-            </div></el-col>
+            <el-col :span="10">
+              <div class="grid-content bg-purple">
+                <el-form-item label="状态码">
+                  <el-input v-model="item.status"></el-input>
+                </el-form-item>
+              </div>
+            </el-col>
+            <el-col :span="10">
+              <div class="grid-content bg-purple">
+                <el-form-item label="含义">
+                  <el-input v-model="item.content"></el-input>
+                </el-form-item>
+              </div>
+            </el-col>
+            <el-col :span="4">
+              <div class="grid-content bg-purple">
+                <el-button type="danger" @click="status.splice(index,1)">移除</el-button>
+              </div>
+            </el-col>
           </el-row>
         </div>
       </el-form>
@@ -42,12 +46,12 @@ export default {
     return {
       mytype: this.type, // 模态框状态
       formType: {
-        name: "", 
+        name: ""
       },
       form: {
-        name: "", 
+        name: ""
       },
-      status:[]
+      status: []
     };
   },
   props: ["type", "fun", "rowData"],
@@ -71,25 +75,25 @@ export default {
   },
   methods: {
     // 添加字典详情
-    addDetail(){
-      this.status.push({status:'',content:''});
+    addDetail() {
+      this.status.push({ status: "", content: "" });
     },
     // 处理字典详情格式
-    codeStatus(data){
+    codeStatus(data) {
       // 编码
-      let str = '';
-      for(var i=0;i<data.length;i++){
-        str += data[i].status + ':' + data[i].content + ';';
+      let str = "";
+      for (var i = 0; i < data.length; i++) {
+        str += data[i].status + ":" + data[i].content + ";";
       }
       return str;
     },
-    decodeStatus(data){
+    decodeStatus(data) {
       // 解码
-      if(data){
-        var arr = data.split(',');
-        for(var i=0;i<arr.length;i++){
-          var brr = arr[i].split(':');
-          this.status.push({status:brr[0],content:brr[1]});
+      if (data) {
+        var arr = data.split(",");
+        for (var i = 0; i < arr.length; i++) {
+          var brr = arr[i].split(":");
+          this.status.push({ status: brr[0], content: brr[1] });
         }
       }
     },
@@ -104,30 +108,47 @@ export default {
         }
       }
       if (type) {
+        // 开启动画
+        const loading = this.$loading({
+          lock: true,
+          text: "Loading",
+          spinner: "el-icon-loading",
+          background: "rgba(0, 0, 0, 0.7)"
+        });
         //  发送ajax
-        this.$http.put(http + dict, {
-            dictName:this.form.name,
-            dictValues:this.codeStatus(this.status),
-            id:this.form.id,
-        }, { emulateJSON: true }).then(
-          data => {
-            if (data.data.msg == "成功") {
-              // 关闭对话框
-              this.mytype = false;
-              // 清空表单数据
-              for (var i in this.form) {
-                this.form[i] = "";
+        this.$http
+          .put(
+            http + dict,
+            {
+              dictName: this.form.name,
+              dictValues: this.codeStatus(this.status),
+              id: this.form.id
+            },
+            { emulateJSON: true }
+          )
+          .then(
+            data => {
+              if (data.data.msg == "成功") {
+                // 关闭对话框
+                this.mytype = false;
+                // 清空表单数据
+                for (var i in this.form) {
+                  this.form[i] = "";
+                }
+                // 清除字典详细信息
+                this.status = [];
+              } else {
+                this.$message.error(data.data.msg);
               }
-              // 清除字典详细信息
-              this.status=[];
-            } else {
-              this.$message.error(data.data.msg);
+              // 结束动画
+              setTimeout(() => {
+                loading.close();
+              }, 0);
+            },
+            err => {
+              this.$message.error(err.data.message);
             }
-          },
-          err => {
-            this.$message.error(err.data.message);
-          }
-        );
+          );
       } else {
         this.$message.error("请填写完表格");
       }
@@ -136,8 +157,8 @@ export default {
       // 修改父级组件的对话框状态
       this.fun("dictEdit");
       // 清除字典详细信息
-      this.status=[];
-    },
+      this.status = [];
+    }
   }
 };
 </script>

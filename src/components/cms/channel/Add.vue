@@ -23,13 +23,14 @@ export default {
     return {
       mytype: this.type, // 模态框状态
       formType: {
-        name: "", 
-        code:""
+        name: "",
+        code: ""
       },
       form: {
-
+        name: "",
+        code: ""
       },
-      status:[]
+      status: []
     };
   },
   props: ["type", "fun", "rowData"],
@@ -37,7 +38,7 @@ export default {
     type: function() {
       // 断开单向数据流
       this.mytype = this.type;
-    },
+    }
   },
   methods: {
     // 发送ajax，修改字典
@@ -51,6 +52,13 @@ export default {
         }
       }
       if (type) {
+        // 开启动画
+        const loading = this.$loading({
+          lock: true,
+          text: "Loading",
+          spinner: "el-icon-loading",
+          background: "rgba(0, 0, 0, 0.7)"
+        });
         //  发送ajax
         this.$http.post(http + channel, this.form, { emulateJSON: true }).then(
           data => {
@@ -66,6 +74,10 @@ export default {
             } else {
               this.$message.error(data.data.msg);
             }
+            // 结束动画
+            setTimeout(() => {
+              loading.close();
+            }, 0);
           },
           err => {
             this.$message.error(err.data.message);
@@ -78,7 +90,7 @@ export default {
     clearText() {
       // 修改父级组件的对话框状态
       this.fun("channeladd");
-    },
+    }
   }
 };
 </script>

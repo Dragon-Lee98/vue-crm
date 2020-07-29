@@ -49,6 +49,13 @@ export default {
         }
       }
       if (type) {
+        // 开启动画
+        const loading = this.$loading({
+          lock: true,
+          text: "Loading",
+          spinner: "el-icon-loading",
+          background: "rgba(0, 0, 0, 0.7)"
+        });
         //  发送ajax
         this.$http
           .get(http + setRole, {
@@ -65,6 +72,10 @@ export default {
               } else {
                 this.$message.error(data.data.msg);
               }
+              // 结束动画
+              setTimeout(() => {
+                loading.close();
+              }, 0);
             },
             err => {
               this.$message.error(err.data.message);
@@ -80,10 +91,17 @@ export default {
     },
     // 获取角色信息
     getRoleList() {
+      // 开启动画
+      const loading = this.$loading({
+        lock: true,
+        text: "Loading",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
       this.$http
         .get(http + roleTreeList, {
-          params:{
-            idUser:this.$store.state.user.info.profile.id
+          params: {
+            idUser: this.$store.state.user.info.profile.id
           }
         })
         .then(
@@ -93,10 +111,13 @@ export default {
             } else {
               this.$message.error(data.data.msg);
             }
+            // 结束动画
+            setTimeout(() => {
+              loading.close();
+            }, 0);
           },
           err => {
             this.$message.error(err.data.message);
-            console.log(err)
           }
         );
     }

@@ -91,11 +91,11 @@ export default {
     },
     rowData: function() {
       // 浅拷贝变深拷贝
-      var json = {}
+      var json = {};
       for (var i in this.rowData) {
         // 全部转换为字符串
         // this.rowData[i] = this.rowData[i].toString();
-        this.$set(json,i,this.rowData[i].toString());
+        this.$set(json, i, this.rowData[i].toString());
       }
       this.form = json;
     }
@@ -105,9 +105,11 @@ export default {
   },
   methods: {
     //  处理时间格式
-    setTime(time){
+    setTime(time) {
       var time = new Date(time);
-      return time.getFullYear()+'-'+(time.getMonth()+1)+'-'+time.getDate();
+      return (
+        time.getFullYear() + "-" + (time.getMonth() + 1) + "-" + time.getDate()
+      );
     },
     // 发送ajax，修改用户
     updataUser() {
@@ -120,27 +122,43 @@ export default {
         }
       }
       if (type) {
+        // 开启动画
+        const loading = this.$loading({
+          lock: true,
+          text: "Loading",
+          spinner: "el-icon-loading",
+          background: "rgba(0, 0, 0, 0.7)"
+        });
+
         //  处理部门信息（只要最后一个id）
-        if(Array.isArray(this.form.deptid)){// 是数组才需要取最后一个数值
-          this.form.deptid = this.form.deptid[this.form.deptid.length-1];
+        if (Array.isArray(this.form.deptid)) {
+          // 是数组才需要取最后一个数值
+          this.form.deptid = this.form.deptid[this.form.deptid.length - 1];
         }
         //  处理生日时间格式
         this.form.birthday = this.setTime(this.form.birthday);
         //  发送ajax
-        this.$http.post(http+user,this.form,{emulateJSON:true}).then((data)=>{
-            if(data.data.msg=='成功'){
-                // 关闭对话框
-                this.mytype = false;
-                // 清空表单数据
-                for(var i in this.form){
-                    this.form[i] = '';
-                }
+        this.$http.post(http + user, this.form, { emulateJSON: true }).then(
+          data => {
+            if (data.data.msg == "成功") {
+              // 关闭对话框
+              this.mytype = false;
+              // 清空表单数据
+              for (var i in this.form) {
+                this.form[i] = "";
+              }
             } else {
               this.$message.error(data.data.msg);
             }
-        },(err)=>{
-          this.$message.error(err.data.message);
-        })
+            // 结束动画
+            setTimeout(() => {
+              loading.close();
+            }, 0);
+          },
+          err => {
+            this.$message.error(err.data.message);
+          }
+        );
       } else {
         this.$message.error("请填写完表格");
       }
@@ -166,14 +184,25 @@ export default {
     },
     // 获取部门信息
     getdeptList() {
+      // 开启动画
+      const loading = this.$loading({
+        lock: true,
+        text: "Loading",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
       this.$http.get(http + deptList).then(
         data => {
-          if(data.data.msg=='成功'){
+          if (data.data.msg == "成功") {
             // 赋值为处理过的部门信息数据
             this.deptListArr = this.setChildrenNull(data.data.data);
           } else {
             this.$message.error(data.data.msg);
           }
+          // 结束动画
+          setTimeout(() => {
+            loading.close();
+          }, 0);
         },
         err => {
           this.$message.error(err.data.message);
