@@ -27,7 +27,7 @@
     </div>
     <!-- 功能组件 -->
 
-    <Add :type="btnType.deptAdd" :fun="showBtn" :rowData="rowData"></Add>
+    <Add :type="btnType.deptAdd" @changeType="changeType" :rowData="rowData"></Add>
 
     <Edit :type="btnType.deptEdit" :fun="showBtn" :rowData="rowData"></Edit>
 
@@ -51,7 +51,7 @@ export default {
     return {
       tableData: "", // 用户列表信息
       btnType: {}, // 按钮的类型
-      rowData: "" // 当前选中的用户
+      rowData: "", // 当前选中的用户
     };
   },
   mounted() {
@@ -59,6 +59,11 @@ export default {
     this.getUserList();
   },
   methods: {
+    // 修改模态框状态
+    changeType(e){
+      console.log(e)
+      this.btnType.deptAdd = e;
+    },
     // 对话框关闭的回调函数，修改对话框状态
     showBtn(type) {
       this.btnType[type] = false;

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog title="添加部门" :visible.sync="mytype" @close="clearText">
+    <el-dialog title="添加部门" :visible.sync="mytype" @close="changeType">
       <div>
         <el-alert v-if="rowData" :title='"当前选择的是 "+rowData.fullname+" 下的部门，如果需要创建公司级别的请取消选择"' type="info" effect="dark"></el-alert>
         <el-alert v-else title="当前选择的是 公司 级别部门，如果需要创建部门级别的请选择创建的父级部门" type="info" effect="dark"></el-alert>
@@ -37,7 +37,7 @@ export default {
       }
     };
   },
-  props: ["type", "fun", "rowData"],
+  props: ["type",  "rowData"],
   watch: {
     type: function() {
       // 断开单向数据流
@@ -45,6 +45,9 @@ export default {
     },
   },
   methods: {
+    changeType(){
+      this.$emit('changeType',false);
+    },
     // 发送ajax，修改部门
     updataUser() {
       // 判断是否填写完表格
